@@ -5,7 +5,7 @@ file(GLOB XDIFF_SRCS xdiff/*.c)
 
 if (BUILD_SHARED_LIBS)
     if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-        list(APPEND XDIFF_SRCS xdiff.def)
+        list(APPEND XDIFF_SRCS xdiff.def xdiff.rc)
     endif()
     add_library(xdiff SHARED ${XDIFF_SRCS})
 else()

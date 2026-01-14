@@ -26,7 +26,7 @@ class xdiffRecipe(ConanFile):
     default_options = {"shared": False, "fPIC": True}
 
     # Sources are located in the same place as this recipe, copy them to the recipe
-    exports_sources = "CMakeLists.txt", "xdiff.def"
+    exports_sources = "CMakeLists.txt", "xdiff.def", "xdiff.rc"
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version], strip_root=True)
@@ -53,7 +53,7 @@ class xdiffRecipe(ConanFile):
         else:
             at_toolchain = AutotoolsToolchain(self)
             at_toolchain.generate()
-    
+
     def _patch_sources_autotools(self):
         # moot for the CMakeLists approach, where the test, tools, and man folders are NOT used
         replace_in_file(self, os.path.join(self.source_folder, "Makefile.am"),
