@@ -1,6 +1,9 @@
 from conan import ConanFile
-from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout
-from conan.tools.files import copy, get
+from conan.tools.apple import fix_apple_shared_install_name
+from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
+from conan.tools.files import copy, get, replace_in_file
+from conan.tools.gnu import Autotools, AutotoolsToolchain
+from conan.tools.layout import basic_layout
 
 import os
 
@@ -37,22 +40,50 @@ class xdiffRecipe(ConanFile):
             self.options.rm_safe("fPIC")
 
     def layout(self):
-        cmake_layout(self)
+        if self.settings.os == "Windows":
+            cmake_layout(self)
+        else:
+            basic_layout(self)
 
     def generate(self):
-        tc = CMakeToolchain(self)
-        tc.preprocessor_definitions["HAVE_WINCONFIG_H"] = None
-        tc.generate()
+        if self.settings.os == "Windows":
+            tc = CMakeToolchain(self)
+            tc.preprocessor_definitions["HAVE_WINCONFIG_H"] = None
+            tc.generate()
+        else:
+            at_toolchain = AutotoolsToolchain(self)
+            at_toolchain.generate()
+    
+    def _patch_sources_autotools(self):
+        # moot for the CMakeLists approach, where the test, tools, and man folders are NOT used
+        replace_in_file(self, os.path.join(self.source_folder, "Makefile.am"),
+            "SUBDIRS = . xdiff test tools man",
+            "SUBDIRS = . xdiff")
+        replace_in_file(self, os.path.join(self.source_folder, "configure.in"),
+            "AC_OUTPUT(Makefile xdiff/Makefile test/Makefile tools/Makefile man/Makefile)",
+            "AC_OUTPUT(Makefile xdiff/Makefile)")
 
     def build(self):
-        cmake = CMake(self)
-        cmake.configure()
-        cmake.build()
+        if self.settings.os == "Windows":
+            cmake = CMake(self)
+            cmake.configure()
+            cmake.build()
+        else:
+            self._patch_sources_autotools()
+            autotools = Autotools(self)
+            autotools.autoreconf()
+            autotools.configure()
+            autotools.make()
 
     def package(self):
         copy(self, "LICENSE", dst=os.path.join(self.package_folder, "licenses"), src=self.source_folder)
-        cmake = CMake(self)
-        cmake.install()
+        if self.settings.os == "Windows":
+            cmake = CMake(self)
+            cmake.install()
+        else:
+            autotools = Autotools(self)
+            autotools.install()
+            fix_apple_shared_install_name(self)
 
     def package_info(self):
         self.cpp_info.libs = ["xdiff"]
