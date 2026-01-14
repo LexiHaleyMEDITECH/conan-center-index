@@ -1,0 +1,32 @@
+LIBRARY "xdiff"
+EXPORTS
+
+        xdl_set_allocator               @1
+        xdl_malloc                      @2
+        xdl_free                        @3
+        xdl_realloc                     @4
+        xdl_init_mmfile                 @5
+        xdl_free_mmfile                 @6
+        xdl_mmfile_iscompact            @7
+        xdl_seek_mmfile                 @8
+        xdl_read_mmfile                 @9
+        xdl_write_mmfile                @10
+        xdl_writem_mmfile               @11
+        xdl_mmfile_writeallocate        @12
+        xdl_mmfile_ptradd               @13
+        xdl_copy_mmfile                 @14
+        xdl_mmfile_first                @15
+        xdl_mmfile_next                 @16
+        xdl_mmfile_size                 @17
+        xdl_mmfile_cmp                  @18
+        xdl_mmfile_compact              @19
+        xdl_diff                        @20
+        xdl_patch                       @21
+        xdl_merge3                      @22
+        xdl_bdiff_mb                    @23
+        xdl_bdiff                       @24
+        xdl_rabdiff_mb                  @25
+        xdl_rabdiff                     @26
+        xdl_bdiff_tgsize                @27
+        xdl_bpatch                      @28
+        xdl_bpatch_multi                @29

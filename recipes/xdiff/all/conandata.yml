@@ -1,0 +1,4 @@
+sources:
+  "0.23":
+    url: "https://github.com/davidel/libxdiff/archive/fb6c0360c806ae36ca97bab5381df5734418b659.tar.gz"
+    sha256: "2096bad0fdf10cb58db037fca2dd953e715d1a4bfc3aad4a4d373264dbc7b72e"
