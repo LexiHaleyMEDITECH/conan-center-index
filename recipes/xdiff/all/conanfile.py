@@ -56,12 +56,20 @@ class xdiffRecipe(ConanFile):
 
     def _patch_sources_autotools(self):
         # moot for the CMakeLists approach, where the test, tools, and man folders are NOT used
+        
         replace_in_file(self, os.path.join(self.source_folder, "Makefile.am"),
             "SUBDIRS = . xdiff test tools man",
             "SUBDIRS = . xdiff")
+        
         replace_in_file(self, os.path.join(self.source_folder, "configure.in"),
             "AC_OUTPUT(Makefile xdiff/Makefile test/Makefile tools/Makefile man/Makefile)",
             "AC_OUTPUT(Makefile xdiff/Makefile)")
+        
+        search_string = "lib_LTLIBRARIES = libxdiff.la"
+        replace_string = f"{search_string}%slibxdiff_la_LDFLAGS = -version-info 0:23:0" % os.linesep
+        
+        replace_in_file(self, os.path.join(self.source_folder, "xdiff", "Makefile.am"),
+                        search_string, replace_string)
 
     def build(self):
         if self.settings.os == "Windows":
