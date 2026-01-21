@@ -1,4 +1,5 @@
 from conan import ConanFile
+from conan.errors import ConanException
 from conan.tools.apple import fix_apple_shared_install_name
 from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, get, replace_in_file
@@ -9,7 +10,6 @@ import os
 
 class xdiffRecipe(ConanFile):
     name = "xdiff"
-    version = "0.23"
     package_type = "library"
 
     # Optional metadata
@@ -55,29 +55,56 @@ class xdiffRecipe(ConanFile):
             at_toolchain.generate()
 
     def _patch_sources_autotools(self):
-        # moot for the CMakeLists approach, where the test, tools, and man folders are NOT used
-        
-        replace_in_file(self, os.path.join(self.source_folder, "Makefile.am"),
-            "SUBDIRS = . xdiff test tools man",
-            "SUBDIRS = . xdiff")
-        
-        replace_in_file(self, os.path.join(self.source_folder, "configure.in"),
-            "AC_OUTPUT(Makefile xdiff/Makefile test/Makefile tools/Makefile man/Makefile)",
-            "AC_OUTPUT(Makefile xdiff/Makefile)")
-        
-        search_string = "lib_LTLIBRARIES = libxdiff.la"
-        replace_string = f"{search_string}%slibxdiff_la_LDFLAGS = -version-info 0:23:0" % os.linesep
-        
-        replace_in_file(self, os.path.join(self.source_folder, "xdiff", "Makefile.am"),
-                        search_string, replace_string)
+        # unnecessary for the CMakeLists approach, where the test, tools, and man folders are NOT used
+        if self.settings.os == "Windows":
+            if self.options.shared:
+                version_array = self.version.split(".")
+                replace_in_file(self, os.path.join(self.source_folder, "xdiff.rc"),
+                                "#define RC_VER_MAJOR", f"#define RC_VER_MAJOR {version_array[0]}")
+                replace_in_file(self, os.path.join(self.source_folder, "xdiff.rc"),
+                                "#define RC_VER_MINOR",
+                                f"#define RC_VER_MINOR {version_array[1] if len(version_array) > 1 else 0}")
+                replace_in_file(self, os.path.join(self.source_folder, "xdiff.rc"),
+                                "#define RC_VER_BUILD",
+                                f"#define RC_VER_BUILD {version_array[2] if len(version_array) > 2 else 0}")
+                replace_in_file(self, os.path.join(self.source_folder, "xdiff.rc"),
+                                "#define RC_VER_OTHER",
+                                f"#define RC_VER_OTHER {version_array[3] if len(version_array) > 3 else 0}")
+        else:
+            replace_in_file(self, os.path.join(self.source_folder, "Makefile.am"),
+                "SUBDIRS = . xdiff test tools man",
+                "SUBDIRS = . xdiff")
+
+            replace_in_file(self, os.path.join(self.source_folder, "configure.in"),
+                "AC_OUTPUT(Makefile xdiff/Makefile test/Makefile tools/Makefile man/Makefile)",
+                "AC_OUTPUT(Makefile xdiff/Makefile)")
+
+            if self.options.shared:
+
+                # there is not (yet?) a clear relationship between xdiff versions/releases and the
+                # libtool scheme of current:revision:age . therefore, a mapping is used with the
+                # expectation that the rate of revisions is so infrequent as to permit manual upkeep
+
+                ld_version = None
+                if self.version == "0.23":
+                    ld_version = "0:23:0"
+
+                if ld_version:
+                    search_string = "lib_LTLIBRARIES = libxdiff.la"
+                    replace_string = f"{search_string}%slibxdiff_la_LDFLAGS = -version-info {ld_version}" % os.linesep
+                    replace_in_file(self, os.path.join(self.source_folder, "xdiff", "Makefile.am"),
+                                    search_string, replace_string)
+                else:
+                    raise ConanException(f"Package build cannot proceed because version({self.version}) lacks a mapping to the current:revision:age model. "
+                                        "Maintainer action required to correct this circumstance.")
 
     def build(self):
+        self._patch_sources_autotools()
         if self.settings.os == "Windows":
             cmake = CMake(self)
             cmake.configure()
             cmake.build()
         else:
-            self._patch_sources_autotools()
             autotools = Autotools(self)
             autotools.autoreconf()
             autotools.configure()

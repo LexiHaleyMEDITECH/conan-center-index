@@ -1,10 +1,10 @@
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-#define VER_MAJOR		0
-#define VER_MINOR		23
-#define VER_BUILD		0
-#define VER_OTHER		0
+#define RC_VER_MAJOR
+#define RC_VER_MINOR
+#define RC_VER_BUILD
+#define RC_VER_OTHER
 
 #define FILE_DESC		"File Differential Library"
 #define FILE_NAME		"libxdiff.dll"
@@ -13,8 +13,8 @@
 #define versionID 1
 
 versionID VERSIONINFO
-FILEVERSION		VER_MAJOR, VER_MINOR, VER_BUILD, VER_OTHER
-PRODUCTVERSION	VER_MAJOR, VER_MINOR, VER_BUILD, VER_OTHER
+FILEVERSION		RC_VER_MAJOR, RC_VER_MINOR, RC_VER_BUILD, RC_VER_OTHER
+PRODUCTVERSION	RC_VER_MAJOR, RC_VER_MINOR, RC_VER_BUILD, RC_VER_OTHER
 FILEFLAGSMASK	0x3fL
 FILEFLAGS		0x8L
 FILEOS			0x40004L
@@ -28,14 +28,14 @@ BEGIN
         BEGIN
             VALUE "CompanyName", FILE_COMPANY
             VALUE "FileDescription", FILE_DESC
-            VALUE "FileVersion", STR(VER_MAJOR) "." STR(VER_MINOR) "." STR(VER_BUILD) "." STR(VER_OTHER)
+            VALUE "FileVersion", STR(RC_VER_MAJOR) "." STR(RC_VER_MINOR) "." STR(RC_VER_BUILD) "." STR(RC_VER_OTHER)
             VALUE "InternalName", FILE_NAME
             VALUE "LegalCopyright", "Apache License 2.0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", FILE_NAME
-            VALUE "PrivateBuild", STR(VER_MAJOR) "." STR(VER_MINOR) "." STR(VER_BUILD) "." STR(VER_OTHER)
+            VALUE "PrivateBuild", STR(RC_VER_MAJOR) "." STR(RC_VER_MINOR) "." STR(RC_VER_BUILD) "." STR(RC_VER_OTHER)
             VALUE "ProductName", FILE_DESC
-            VALUE "ProductVersion", STR(VER_MAJOR) "." STR(VER_MINOR) "." STR(VER_BUILD) "." STR(VER_OTHER)
+            VALUE "ProductVersion", STR(RC_VER_MAJOR) "." STR(RC_VER_MINOR) "." STR(RC_VER_BUILD) "." STR(RC_VER_OTHER)
             VALUE "SpecialBuild", "\0"
         END
     END
