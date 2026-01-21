@@ -2,6 +2,18 @@
 #include <stdio.h>
 #include "xdiff.h"
 
+#ifdef XDIFF_SHARED_LIB
+
+extern char *__imp_libxdiff_version;
+#define pTheVersionString __imp_libxdiff_version
+
+#else
+
+extern char libxdiff_version[];
+#define pTheVersionString libxdiff_version
+
+#endif
+
 void *wrap_malloc(void *priv, unsigned int size) {
         return malloc(size);
 }
@@ -28,6 +40,7 @@ int main (int argc, char **argv) {
 
         my_init_xdiff();
 
+        printf("xdiff: %s\n", pTheVersionString);
         printf("Calling xdl_malloc:");
 
         void *pXdiffTest = xdl_malloc(8);

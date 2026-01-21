@@ -1,6 +1,5 @@
 LIBRARY "xdiff"
 EXPORTS
-
         xdl_set_allocator               @1
         xdl_malloc                      @2
         xdl_free                        @3
@@ -30,3 +29,5 @@ EXPORTS
         xdl_bdiff_tgsize                @27
         xdl_bpatch                      @28
         xdl_bpatch_multi                @29
+
+        libxdiff_version                DATA
