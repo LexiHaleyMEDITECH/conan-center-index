@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "xdiff.h"
 
-#ifdef XDIFF_SHARED_LIB
+#ifdef XDIFF_SHARED_DLL
 
 extern char *__imp_libxdiff_version;
 #define pTheVersionString __imp_libxdiff_version

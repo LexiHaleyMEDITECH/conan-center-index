@@ -17,7 +17,8 @@ class xdiffTestConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["XDIFF_SHARED_BUILD"] = self.dependencies["xdiff"].options.shared
+        if self.settings.os == "Windows":
+            tc.variables["XDIFF_SHARED_BUILD"] = self.dependencies["xdiff"].options.shared
         tc.generate()
 
     def build(self):
