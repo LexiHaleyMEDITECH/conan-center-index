@@ -1,0 +1,47 @@
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
+#define RC_VER_MAJOR
+#define RC_VER_MINOR
+#define RC_VER_BUILD
+#define RC_VER_OTHER
+
+#define FILE_DESC		"File Differential Library"
+#define FILE_NAME		"libxdiff.dll"
+#define FILE_COMPANY	"Davide Libenzi <davidel@xmailserver.org>"
+
+#define versionID 1
+
+versionID VERSIONINFO
+FILEVERSION		RC_VER_MAJOR, RC_VER_MINOR, RC_VER_BUILD, RC_VER_OTHER
+PRODUCTVERSION	RC_VER_MAJOR, RC_VER_MINOR, RC_VER_BUILD, RC_VER_OTHER
+FILEFLAGSMASK	0x3fL
+FILEFLAGS		0x8L
+FILEOS			0x40004L
+FILETYPE		0x2L
+FILESUBTYPE		0x0L
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", FILE_COMPANY
+            VALUE "FileDescription", FILE_DESC
+            VALUE "FileVersion", STR(RC_VER_MAJOR) "." STR(RC_VER_MINOR) "." STR(RC_VER_BUILD) "." STR(RC_VER_OTHER)
+            VALUE "InternalName", FILE_NAME
+            VALUE "LegalCopyright", "Apache License 2.0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", FILE_NAME
+            VALUE "PrivateBuild", STR(RC_VER_MAJOR) "." STR(RC_VER_MINOR) "." STR(RC_VER_BUILD) "." STR(RC_VER_OTHER)
+            VALUE "ProductName", FILE_DESC
+            VALUE "ProductVersion", STR(RC_VER_MAJOR) "." STR(RC_VER_MINOR) "." STR(RC_VER_BUILD) "." STR(RC_VER_OTHER)
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 0x4B0
+    END
+END
